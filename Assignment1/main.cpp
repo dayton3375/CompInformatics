@@ -5,12 +5,6 @@
 
 using namespace std;
 
-Table initializeTable(string & inputFileName)
-{
-    Table t(5, 7);
-    return t;
-}
-
 int main(int argc, char *argv[])
 {
     // make sure there's enough parameters
@@ -18,7 +12,7 @@ int main(int argc, char *argv[])
     {
         cout << "Invalid # of cmd arguments: " << argc - 1 << " were given. 2 are needed" << endl;    
         cout << "try: <executable name> <input file containing both s1 and s2> <0: global, 1: local> <optional: path to parameters config file>" << endl;
-        return -1;
+        return -1; 
     }
 
     // gather program arguments
@@ -32,7 +26,8 @@ int main(int argc, char *argv[])
         paramFileName = argv[4];
     }
 
-    Table t = initializeTable(inputFileName);
+    Table t(inputFileName);
+    t.initialize();
     
     return 0;
 }
