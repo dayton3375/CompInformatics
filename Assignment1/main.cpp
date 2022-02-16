@@ -1,8 +1,15 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include "Table.h"
 
 using namespace std;
+
+Table initializeTable(string & inputFileName)
+{
+    Table t(5, 7);
+    return t;
+}
 
 int main(int argc, char *argv[])
 {
@@ -25,5 +32,7 @@ int main(int argc, char *argv[])
         paramFileName = argv[4];
     }
 
+    Table t = initializeTable(inputFileName);
+    
     return 0;
 }
