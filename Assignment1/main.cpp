@@ -1,9 +1,15 @@
 #include <iostream>
 #include <string>
-#include <sstream>
+#include "ScoreTable.h"
 #include "Table.h"
 
 using namespace std;
+
+enum algorithm
+{
+    GLOBAL,
+    LOCAL
+};
 
 int main(int argc, char *argv[])
 {
@@ -18,6 +24,12 @@ int main(int argc, char *argv[])
     // gather program arguments
     string inputFileName = argv[1];
     char seqType = argv[2][0];
+    algorithm alg = LOCAL;
+
+    if (seqType == '0')
+    {
+        alg = GLOBAL;
+    }
 
     // if user included the optional argument of a param file, otherwise default file
     string paramFileName = "parameters.config";
@@ -25,9 +37,19 @@ int main(int argc, char *argv[])
     {
         paramFileName = argv[4];
     }
-
-    Table t(inputFileName);
+    ScoreTable score(paramFileName);
+    Table t(inputFileName, paramFileName, score);
     t.initialize();
+
+    if (alg == GLOBAL)
+    {
+        t.globalInit();
+        t.globalAlign();
+    }
+    else
+    {
+        t.localInit();
+    }
     
     return 0;
 }
