@@ -135,10 +135,6 @@ public:
     {
         for (int i = 1; i < vect.size(); ++i)
         {
-            if (i == vect.size() - 1)
-            {
-                int x = 1;
-            }
             for (int j = 1; j < vect[0].size(); ++j)
             {
                 vect[i][j].Sscore = Get_S(i, j);
@@ -199,5 +195,92 @@ public:
 
         int maxVal = max(I, max(S, D));
         return maxVal;
+    }
+
+    char GetNextMove(const int i, const int j)
+    {
+        char result = '\0';
+        cell c = vect[i][j];
+
+        int maxVal = max(c.Dscore, max(c.Iscore, c.Sscore));
+
+        if (c.Dscore == maxVal)
+        {
+            result = 'D';
+        }
+        else if (c.Iscore == maxVal)
+        {
+            result = 'I';
+        }
+        else
+        {
+            result = 'S';
+        }
+
+        return result;
+    }
+
+    void retraceTable()
+    {
+        char nextMove = '\0'; // should be I for Insert, S for Substitute, or D for Delete
+        // set indexes to bottom right corner of table
+        int i = vect.size() - 1;
+        int j = vect[0].size() - 1;
+
+        string s1_Line = "";
+        string midLine = "";
+        string s2_Line = "";
+
+        while ((i >= 0) && (j >= 0))
+        {
+            nextMove = GetNextMove(i, j); // I, S, or D
+
+            switch(nextMove)
+            {
+                case 'I':   // Insert
+                    s1_Line += s1[i];
+                    midLine += " ";
+                    s2_Line += "-";
+                    --j;
+                    break;
+                
+                case 'D': // Delete
+                    s1_Line += "-";
+                    midLine += " ";
+                    s2_Line += s2[j];
+                    --i;
+                    break;
+
+                case 'S': // Substitute
+                    s1_Line += s1[i];
+
+                    if (s1[i] == s2[j])
+                    {
+                        midLine += "|";
+                    }
+                    else
+                    {
+                        midLine += " ";
+                    }
+
+                    s2_Line += s2[j];
+                    --i;
+                    --j;
+                    break;
+
+                default:
+                    cout << "error in retrace, switch value: " << nextMove << endl;
+                    return;
+            }
+        }
+
+        cout << "INPUT:" << endl;
+        cout << s1 << endl;
+        cout << s2 << endl << endl;
+
+        cout << "OUTPUT:" << endl;
+        cout << s1_Line << endl;
+        cout << midLine << endl;
+        cout << s2_Line << endl;
     }
 };

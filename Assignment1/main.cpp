@@ -50,6 +50,8 @@ int main(int argc, char *argv[])
     {
         t.localInit();
     }
+
+    t.retraceTable();
     
     return 0;
 }
