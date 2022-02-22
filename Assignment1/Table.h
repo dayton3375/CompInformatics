@@ -4,7 +4,7 @@
 #include <fstream>
 #include "cell.h"
 
-#define MINIMUM -10000
+#define MINIMUM -10000 // this is like negative infinity for the Initilization
 
 using namespace std;
 
@@ -81,6 +81,7 @@ public:
             else
             {
                 cout << "Error in reading file" << endl;
+                return;
             }
         }
     }
@@ -131,6 +132,7 @@ public:
 
     }
 
+    // Fills the table
     void globalAlign()
     {
         for (int i = 1; i < vect.size(); ++i)
@@ -204,17 +206,22 @@ public:
 
         int maxVal = max(c.Dscore, max(c.Iscore, c.Sscore));
 
-        if (c.Dscore == maxVal)
+        if (c.Sscore == maxVal)
         {
-            result = 'D';
+            result = 'S';
         }
         else if (c.Iscore == maxVal)
         {
             result = 'I';
         }
+        else if (c.Dscore == maxVal)
+        {
+            result = 'D';
+        }
         else
         {
-            result = 'S';
+            cout << "Error in GetNextMove of value: " << maxVal << endl;
+            return '\0';
         }
 
         return result;
@@ -227,6 +234,7 @@ public:
         int i = vect.size() - 1;
         int j = vect[0].size() - 1;
 
+        // these will be the strings printed to the screen
         string s1_Line = "";
         string midLine = "";
         string s2_Line = "";
@@ -237,33 +245,33 @@ public:
 
             switch(nextMove)
             {
-                case 'I':   // Insert
-                    s1_Line += s1[i];
-                    midLine += " ";
-                    s2_Line += "-";
-                    --j;
+                case 'D':   // Delete
+                    s1_Line = s1[i] + s1_Line;
+                    midLine = " " + midLine;
+                    s2_Line = "-" + s2_Line;
+                    --i;
                     break;
                 
-                case 'D': // Delete
-                    s1_Line += "-";
-                    midLine += " ";
-                    s2_Line += s2[j];
-                    --i;
+                case 'I': // Insert
+                    s1_Line = "-" + s1_Line;
+                    midLine = " " + midLine;
+                    s2_Line = s2[j] + s2_Line;
+                    --j;
                     break;
 
                 case 'S': // Substitute
-                    s1_Line += s1[i];
+                    s1_Line = s1[i] + s1_Line;
 
                     if (s1[i] == s2[j])
                     {
-                        midLine += "|";
+                        midLine = "|" + midLine;
                     }
                     else
                     {
-                        midLine += " ";
+                        midLine = " " + midLine;
                     }
 
-                    s2_Line += s2[j];
+                    s2_Line = s2[j] + s2_Line;
                     --i;
                     --j;
                     break;
@@ -275,8 +283,8 @@ public:
         }
 
         cout << "INPUT:" << endl;
-        cout << s1 << endl;
-        cout << s2 << endl << endl;
+        cout << "S1: " << s1 << endl;
+        cout << "S2: " << s2 << endl << endl;
 
         cout << "OUTPUT:" << endl;
         cout << s1_Line << endl;

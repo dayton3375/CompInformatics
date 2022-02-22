@@ -46,9 +46,10 @@ int main(int argc, char *argv[])
         t.globalInit();
         t.globalAlign();
     }
-    else
+    else // alg == LOCAL
     {
         t.localInit();
+        // t.localAlign();
     }
 
     t.retraceTable();
