@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+Assignment1/a.out
+Assignment1/main
+Assignment1/main.dSYM/*
+Assignment1/main.dSYM

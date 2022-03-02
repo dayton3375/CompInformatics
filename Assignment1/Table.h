@@ -23,6 +23,13 @@ public:
     int h;
     int g;
 
+    // statistics
+    int matches;
+    int mismatches;
+    int opening_gaps;
+    int gap_extensions;
+    int global_score;
+
     vector<vector<cell> > vect;
 
     // builds a table
@@ -34,6 +41,13 @@ public:
         mismatch = sc.mismatch;
         h = sc.h;
         g = sc.g;
+
+        matches = 0;
+        mismatches = 0;
+        opening_gaps = 0;
+        gap_extensions = 0;
+        global_score = 0;
+
         readFile(inputFileName);
     }
 
@@ -239,6 +253,8 @@ public:
         string midLine = "";
         string s2_Line = "";
 
+        bool isGap = false;
+
         while ((i >= 0) && (j >= 0))
         {
             nextMove = GetNextMove(i, j); // I, S, or D
@@ -246,6 +262,17 @@ public:
             switch(nextMove)
             {
                 case 'D':   // Delete
+                    if (isGap == false)
+                    {
+                        isGap = true;
+                        ++opening_gaps;
+                        global_score += h;
+                    }
+                    else
+                    {
+                        global_score += g;
+                        ++gap_extensions;
+                    }
                     s1_Line = s1[i] + s1_Line;
                     midLine = " " + midLine;
                     s2_Line = "-" + s2_Line;
@@ -253,6 +280,17 @@ public:
                     break;
                 
                 case 'I': // Insert
+                    if (isGap == false)
+                    {
+                        isGap = true;
+                        ++opening_gaps;
+                        global_score += h;
+                    }
+                    else
+                    {
+                        ++gap_extensions;
+                        global_score += g;
+                    }
                     s1_Line = "-" + s1_Line;
                     midLine = " " + midLine;
                     s2_Line = s2[j] + s2_Line;
@@ -260,15 +298,20 @@ public:
                     break;
 
                 case 'S': // Substitute
+                    isGap = false;
                     s1_Line = s1[i] + s1_Line;
 
                     if (s1[i] == s2[j])
                     {
                         midLine = "|" + midLine;
+                        matches++;
+                        global_score += match;
                     }
                     else
                     {
                         midLine = " " + midLine;
+                        mismatches++;
+                        global_score += mismatch;
                     }
 
                     s2_Line = s2[j] + s2_Line;
@@ -282,13 +325,26 @@ public:
             }
         }
 
-        cout << "INPUT:" << endl;
-        cout << "S1: " << s1 << endl;
-        cout << "S2: " << s2 << endl << endl;
+        cout << "INPUT:" << endl << endl;
+        cout << "Scores:   " << "match = " << match << "   ";
+        cout << "mismatch = " << mismatch << "   ";
+        cout << "h = " << h << "   ";
+        cout << "g = " << g << endl << endl;
 
-        cout << "OUTPUT:" << endl;
-        cout << s1_Line << endl;
-        cout << midLine << endl;
-        cout << s2_Line << endl;
+        // cout << "Sequence 1 length: " << s1.length() << "characters" << endl;
+        // cout << "Sequence 2 length: " << s2.length() << "characters" << endl << endl;
+        // cout << "S1: " << s1 << endl;
+        // cout << "S2: " << s2 << endl << endl;
+
+        // cout << "OUTPUT:" << endl;
+        // cout << s1_Line << endl;
+        // cout << midLine << endl;
+        // cout << s2_Line << endl << endl;
+
+        cout << "Global Optimal Score: " << global_score << endl;
+        cout << "Matches: " << matches << "   ";
+        cout << "Mismatches: " << mismatches << "   ";
+        cout << "Opening Gaps: " << opening_gaps << "   ";
+        cout << "Gap Extensions: " << gap_extensions << endl;
     }
 };
