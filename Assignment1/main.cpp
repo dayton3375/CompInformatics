@@ -1,15 +1,16 @@
 #include <iostream>
 #include <string>
 #include "ScoreTable.h"
-#include "Table.h"
-
-using namespace std;
 
 enum algorithm
 {
     GLOBAL,
     LOCAL
 };
+
+#include "Table.h"
+
+using namespace std;
 
 int main(int argc, char *argv[])
 {
@@ -49,10 +50,10 @@ int main(int argc, char *argv[])
     else // alg == LOCAL
     {
         t.localInit();
-        // t.localAlign();
+        t.localAlign();
     }
 
-    t.retraceTable();
+    t.retraceTable(alg);
     
     return 0;
 }

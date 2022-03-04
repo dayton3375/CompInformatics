@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": ["sequence.txt", "0"],
+            "args": ["Opsin1_colorblindness_gene.fasta", "1"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

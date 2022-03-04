@@ -4,7 +4,7 @@
 #include <fstream>
 #include "cell.h"
 
-#define MINIMUM -10000 // this is like negative infinity for the Initilization
+#define MINIMUM -100000 // this is like negative infinity for the Initilization
 
 using namespace std;
 
@@ -30,6 +30,10 @@ public:
     int gap_extensions;
     int global_score;
 
+    int maxAlignLocal; // largest score during local align
+    int alignLocal_i;
+    int alignLocal_j;
+
     vector<vector<cell> > vect;
 
     // builds a table
@@ -47,6 +51,10 @@ public:
         opening_gaps = 0;
         gap_extensions = 0;
         global_score = 0;
+
+        maxAlignLocal = INT_MIN;
+        alignLocal_i = 0;
+        alignLocal_j = 0;
 
         readFile(inputFileName);
     }
@@ -103,8 +111,8 @@ public:
     // sets all cell values to 0
     void initialize()
     {
-        width = s1.length();
-        height = s2.length();
+        width = s1.length() + 1;
+        height = s2.length() + 1;
         vector<vector <cell> > v1(width , vector<cell> (height));
         vect = v1;
 
@@ -143,7 +151,22 @@ public:
 
     void localInit()
     {
+        vect[0][0].Dscore = 0;
+        vect[0][0].Iscore = 0;
+        vect[0][0].Sscore = 0;
 
+        for (int i = 1; i < vect.size(); ++i)
+        {
+            vect[i][0].Sscore = MINIMUM;
+            vect[i][0].Dscore = 0;
+            vect[i][0].Iscore = MINIMUM;
+        }
+        for (int j = 1; j < vect[0].size(); ++j)
+        {
+            vect[0][j].Sscore = MINIMUM;
+            vect[0][j].Dscore = MINIMUM;
+            vect[0][j].Iscore = 0;
+        }
     }
 
     // Fills the table
@@ -158,6 +181,60 @@ public:
                 vect[i][j].Iscore = Get_I(i, j);
             }
         }
+        int m = vect.size() - 1;
+        int n = vect[0].size() - 1;
+        cout << "Total Score" << vect[m][n].Sscore << "    " << vect[m][n].Dscore << "    " << vect[m][n].Iscore << endl;
+    }
+
+    void localAlign()
+    {
+        int S = 0;
+        int D = 0;
+        int I = 0;
+        int maxScore = INT_MIN;
+
+        for (int i = 1; i < vect.size(); ++i)
+        {
+            for (int j = 1; j < vect[0].size(); ++j)
+            {
+                S = Get_S(i, j);
+                D = Get_D(i, j);
+                I = Get_I(i, j);
+
+                vect[i][j].Sscore = S;
+                vect[i][j].Dscore = D;
+                vect[i][j].Iscore = I;
+
+                zeroIfNegative(i, j); // zero scores that are negative
+
+                maxScore = max(S, max(D, I)); // get the largest score
+                
+                if (maxScore > maxAlignLocal)
+                {
+                    maxAlignLocal = maxScore;
+                    alignLocal_i = i;
+                    alignLocal_j = j;
+                }
+            }
+        }
+    }
+
+    // this zeros out negative score values
+    // ONLY use during LOCAL align
+    void zeroIfNegative(const int i, const int j)
+    {
+        if (vect[i][j].Sscore < 0)
+        {
+            vect[i][j].Sscore = 0;
+        }
+        if (vect[i][j].Dscore < 0)
+        {
+            vect[i][j].Dscore = 0;
+        }
+        if (vect[i][j].Iscore < 0)
+        {
+            vect[i][j].Iscore = 0;
+        }
     }
 
     int Get_S(const int i, const int j)
@@ -166,7 +243,7 @@ public:
         int result;
         cell c = vect[i - 1][j - 1];
 
-        if (s1[i] == s1[j])
+        if (s1[i] == s2[j])
         {
             isMatch = true;
         }
@@ -241,12 +318,23 @@ public:
         return result;
     }
 
-    void retraceTable()
+    void retraceTable(const algorithm alg)
     {
         char nextMove = '\0'; // should be I for Insert, S for Substitute, or D for Delete
-        // set indexes to bottom right corner of table
-        int i = vect.size() - 1;
-        int j = vect[0].size() - 1;
+        int i = 0;
+        int j = 0;
+
+        if (alg == GLOBAL)
+        {
+            // set indexes to bottom right corner of table
+            i = vect.size() - 1;
+            j = vect[0].size() - 1;
+        }
+        else // alg == LOCAL
+        {
+            i = alignLocal_i;
+            j = alignLocal_j;
+        }
 
         // these will be the strings printed to the screen
         string s1_Line = "";
@@ -266,7 +354,7 @@ public:
                     {
                         isGap = true;
                         ++opening_gaps;
-                        global_score += h;
+                        global_score += h + g;
                     }
                     else
                     {
@@ -284,7 +372,7 @@ public:
                     {
                         isGap = true;
                         ++opening_gaps;
-                        global_score += h;
+                        global_score += h + g;
                     }
                     else
                     {
@@ -325,11 +413,11 @@ public:
             }
         }
 
-        cout << "INPUT:" << endl << endl;
-        cout << "Scores:   " << "match = " << match << "   ";
-        cout << "mismatch = " << mismatch << "   ";
-        cout << "h = " << h << "   ";
-        cout << "g = " << g << endl << endl;
+        // cout << "INPUT:" << endl << endl;
+        // cout << "Scores:   " << "match = " << match << "   ";
+        // cout << "mismatch = " << mismatch << "   ";
+        // cout << "h = " << h << "   ";
+        // cout << "g = " << g << endl << endl;
 
         // cout << "Sequence 1 length: " << s1.length() << "characters" << endl;
         // cout << "Sequence 2 length: " << s2.length() << "characters" << endl << endl;
@@ -341,10 +429,10 @@ public:
         // cout << midLine << endl;
         // cout << s2_Line << endl << endl;
 
-        cout << "Global Optimal Score: " << global_score << endl;
-        cout << "Matches: " << matches << "   ";
-        cout << "Mismatches: " << mismatches << "   ";
-        cout << "Opening Gaps: " << opening_gaps << "   ";
-        cout << "Gap Extensions: " << gap_extensions << endl;
+        // cout << "Global Optimal Score: " << global_score << endl;
+        // cout << "Matches: " << matches << "   ";
+        // cout << "Mismatches: " << mismatches << "   ";
+        // cout << "Opening Gaps: " << opening_gaps << "   ";
+        // cout << "Gap Extensions: " << gap_extensions << endl;
     }
 };
