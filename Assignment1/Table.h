@@ -28,7 +28,6 @@ public:
     int mismatches;
     int opening_gaps;
     int gap_extensions;
-    int global_score;
 
     int maxAlignLocal; // largest score during local align
     int alignLocal_i;
@@ -50,7 +49,6 @@ public:
         mismatches = 0;
         opening_gaps = 0;
         gap_extensions = 0;
-        global_score = 0;
 
         maxAlignLocal = INT_MIN;
         alignLocal_i = 0;
@@ -126,6 +124,12 @@ public:
                 c.Iscore = 0;
             }
         }
+
+        cout << "INPUT:" << endl << endl;
+        cout << "Scores:   " << "match = " << match << "   ";
+        cout << "mismatch = " << mismatch << "   ";
+        cout << "h = " << h << "   ";
+        cout << "g = " << g << endl << endl;
     }
 
     // initializes the first rows of the table
@@ -183,7 +187,7 @@ public:
         }
         int m = vect.size() - 1;
         int n = vect[0].size() - 1;
-        cout << "Total Score" << vect[m][n].Sscore << "    " << vect[m][n].Dscore << "    " << vect[m][n].Iscore << endl;
+        cout << "Global Score: " << vect[m][n].Sscore << endl;
     }
 
     void localAlign()
@@ -217,6 +221,10 @@ public:
                 }
             }
         }
+
+        int m = vect.size() - 1;
+        int n = vect[0].size() - 1;
+        cout << "Global Score: " << vect[m][n].Sscore << endl;
     }
 
     // this zeros out negative score values
@@ -354,11 +362,9 @@ public:
                     {
                         isGap = true;
                         ++opening_gaps;
-                        global_score += h + g;
                     }
                     else
                     {
-                        global_score += g;
                         ++gap_extensions;
                     }
                     s1_Line = s1[i] + s1_Line;
@@ -372,12 +378,10 @@ public:
                     {
                         isGap = true;
                         ++opening_gaps;
-                        global_score += h + g;
                     }
                     else
                     {
                         ++gap_extensions;
-                        global_score += g;
                     }
                     s1_Line = "-" + s1_Line;
                     midLine = " " + midLine;
@@ -393,13 +397,11 @@ public:
                     {
                         midLine = "|" + midLine;
                         matches++;
-                        global_score += match;
                     }
                     else
                     {
                         midLine = " " + midLine;
                         mismatches++;
-                        global_score += mismatch;
                     }
 
                     s2_Line = s2[j] + s2_Line;
@@ -412,27 +414,5 @@ public:
                     return;
             }
         }
-
-        // cout << "INPUT:" << endl << endl;
-        // cout << "Scores:   " << "match = " << match << "   ";
-        // cout << "mismatch = " << mismatch << "   ";
-        // cout << "h = " << h << "   ";
-        // cout << "g = " << g << endl << endl;
-
-        // cout << "Sequence 1 length: " << s1.length() << "characters" << endl;
-        // cout << "Sequence 2 length: " << s2.length() << "characters" << endl << endl;
-        // cout << "S1: " << s1 << endl;
-        // cout << "S2: " << s2 << endl << endl;
-
-        // cout << "OUTPUT:" << endl;
-        // cout << s1_Line << endl;
-        // cout << midLine << endl;
-        // cout << s2_Line << endl << endl;
-
-        // cout << "Global Optimal Score: " << global_score << endl;
-        // cout << "Matches: " << matches << "   ";
-        // cout << "Mismatches: " << mismatches << "   ";
-        // cout << "Opening Gaps: " << opening_gaps << "   ";
-        // cout << "Gap Extensions: " << gap_extensions << endl;
     }
 };
