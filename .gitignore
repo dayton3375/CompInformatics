@@ -131,3 +131,8 @@ Assignment1/a.out
 Assignment1/main
 Assignment1/main.dSYM/*
 Assignment1/main.dSYM
+.vscode/launch.json
+.vscode/tasks.json
+ParseTrees/main
+ParseTrees/main.dSYM/Contents/Info.plist
+ParseTrees/main.dSYM/Contents/Resources/DWARF/main
