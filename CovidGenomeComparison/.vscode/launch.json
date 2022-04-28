@@ -2,20 +2,20 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "g++ - Build and debug active file",
+      "name": "(lldb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${fileDirname}/${fileBasenameNoExtension}",
+      "program": "${workspaceFolder}/a.out",
       "args": [
-        "Opsin1_colorblindness_gene.fasta",
-        "1"
+        "Covid_USA-CA4.fasta",
+        "MERS_2014_USA_KP223131.fasta",
+        "SARS_2017_MK062179.fasta"
       ],
       "stopAtEntry": false,
       "cwd": "${fileDirname}",
       "environment": [],
       "externalConsole": false,
-      "MIMode": "lldb",
-      "preLaunchTask": "C/C++: g++ build active file"
+      "MIMode": "lldb"
     },
     {
       "name": "C/C++ Runner: Debug Session",
@@ -23,9 +23,9 @@
       "request": "launch",
       "args": [],
       "stopAtEntry": true,
-      "cwd": "/Users/daytondekam/Documents/CompInformatics/Assignment1",
+      "cwd": "/Users/daytondekam/Documents/CompInformatics/CovidGenomeComparison",
       "environment": [],
-      "program": "/Users/daytondekam/Documents/CompInformatics/Assignment1/build/Debug/outDebug",
+      "program": "/Users/daytondekam/Documents/CompInformatics/CovidGenomeComparison/build/Debug/outDebug",
       "internalConsoleOptions": "openOnSessionStart",
       "MIMode": "gdb",
       "console": "integratedTerminal"

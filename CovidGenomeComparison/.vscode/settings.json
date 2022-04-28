@@ -1,12 +1,4 @@
 {
-  "files.associations": {
-    "iosfwd": "cpp",
-    "vector": "cpp",
-    "algorithm": "cpp",
-    "stack": "cpp",
-    "string": "cpp",
-    "ostream": "cpp"
-  },
   "C_Cpp_Runner.cCompilerPath": "/usr/bin/clang",
   "C_Cpp_Runner.cppCompilerPath": "/usr/bin/clang++",
   "C_Cpp_Runner.debuggerPath": "/usr/bin/lldb",
@@ -34,5 +26,9 @@
     "**/.*/**",
     "**/.vscode",
     "**/.vscode/**"
-  ]
+  ],
+  "files.associations": {
+    "iosfwd": "cpp",
+    "vector": "cpp"
+  }
 }

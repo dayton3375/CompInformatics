@@ -36,7 +36,7 @@ public:
     vector<vector<cell> > vect;
 
     // builds a table
-    Table(string & inputFileName, string & paramFileName, ScoreTable & sc)
+    Table(string &inputFileName, string &paramFileName, ScoreTable &sc)
     {
         s1 = "";
         s2 = "";
@@ -58,7 +58,7 @@ public:
     }
 
     // reads the input file and fills s1 and s2
-    void readFile(string & inputFileName)
+    void readFile(string &inputFileName)
     {
         ifstream inStream;
         inStream.open(inputFileName, ifstream::in);
@@ -111,7 +111,7 @@ public:
     {
         width = s1.length() + 1;
         height = s2.length() + 1;
-        vector<vector <cell> > v1(width , vector<cell> (height));
+        vector<vector<cell> > v1(width, vector<cell>(height));
         vect = v1;
 
         // initialize the table cells
@@ -125,11 +125,14 @@ public:
             }
         }
 
-        cout << "INPUT:" << endl << endl;
-        cout << "Scores:   " << "match = " << match << "   ";
+        cout << "INPUT:" << endl
+             << endl;
+        cout << "Scores:   "
+             << "match = " << match << "   ";
         cout << "mismatch = " << mismatch << "   ";
         cout << "h = " << h << "   ";
-        cout << "g = " << g << endl << endl;
+        cout << "g = " << g << endl
+             << endl;
     }
 
     // initializes the first rows of the table
@@ -212,7 +215,7 @@ public:
                 zeroIfNegative(i, j); // zero scores that are negative
 
                 maxScore = max(S, max(D, I)); // get the largest score
-                
+
                 if (maxScore > maxAlignLocal)
                 {
                     maxAlignLocal = maxScore;
@@ -261,7 +264,7 @@ public:
         int I = c.Iscore;
 
         int maxVal = max(D, max(S, I));
-        
+
         if (isMatch)
         {
             result = maxVal + match;
@@ -355,63 +358,63 @@ public:
         {
             nextMove = GetNextMove(i, j); // I, S, or D
 
-            switch(nextMove)
+            switch (nextMove)
             {
-                case 'D':   // Delete
-                    if (isGap == false)
-                    {
-                        isGap = true;
-                        ++opening_gaps;
-                    }
-                    else
-                    {
-                        ++gap_extensions;
-                    }
-                    s1_Line = s1[i] + s1_Line;
+            case 'D': // Delete
+                if (isGap == false)
+                {
+                    isGap = true;
+                    ++opening_gaps;
+                }
+                else
+                {
+                    ++gap_extensions;
+                }
+                s1_Line = s1[i] + s1_Line;
+                midLine = " " + midLine;
+                s2_Line = "-" + s2_Line;
+                --i;
+                break;
+
+            case 'I': // Insert
+                if (isGap == false)
+                {
+                    isGap = true;
+                    ++opening_gaps;
+                }
+                else
+                {
+                    ++gap_extensions;
+                }
+                s1_Line = "-" + s1_Line;
+                midLine = " " + midLine;
+                s2_Line = s2[j] + s2_Line;
+                --j;
+                break;
+
+            case 'S': // Substitute
+                isGap = false;
+                s1_Line = s1[i] + s1_Line;
+
+                if (s1[i] == s2[j])
+                {
+                    midLine = "|" + midLine;
+                    matches++;
+                }
+                else
+                {
                     midLine = " " + midLine;
-                    s2_Line = "-" + s2_Line;
-                    --i;
-                    break;
-                
-                case 'I': // Insert
-                    if (isGap == false)
-                    {
-                        isGap = true;
-                        ++opening_gaps;
-                    }
-                    else
-                    {
-                        ++gap_extensions;
-                    }
-                    s1_Line = "-" + s1_Line;
-                    midLine = " " + midLine;
-                    s2_Line = s2[j] + s2_Line;
-                    --j;
-                    break;
+                    mismatches++;
+                }
 
-                case 'S': // Substitute
-                    isGap = false;
-                    s1_Line = s1[i] + s1_Line;
+                s2_Line = s2[j] + s2_Line;
+                --i;
+                --j;
+                break;
 
-                    if (s1[i] == s2[j])
-                    {
-                        midLine = "|" + midLine;
-                        matches++;
-                    }
-                    else
-                    {
-                        midLine = " " + midLine;
-                        mismatches++;
-                    }
-
-                    s2_Line = s2[j] + s2_Line;
-                    --i;
-                    --j;
-                    break;
-
-                default:
-                    cout << "error in retrace, switch value: " << nextMove << endl;
-                    return;
+            default:
+                cout << "error in retrace, switch value: " << nextMove << endl;
+                return;
             }
         }
     }
